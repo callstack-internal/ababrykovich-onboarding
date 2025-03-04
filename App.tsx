@@ -1,130 +1,179 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
-import React from 'react';
-import type {PropsWithChildren} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
-  ScrollView,
-  StatusBar,
+  FlatList,
+  ActivityIndicator,
   StyleSheet,
   Text,
-  useColorScheme,
   View,
+  SafeAreaView,
 } from 'react-native';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+import { OWM_API_KEY } from '@env';
 
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
+// TODO move to separate class
+// TODO minimize type to keep only essential info
+type CityWeather = {
+  coord: { lon: number; lat: number };
+  dt: number;
+  id: number;
+  main: { temp: number; feels_like: number; temp_min: number; temp_max: number; pressure: number; sea_level: number; grnd_level: number; humidity: number };
+  name: string;
+  sys: { country: string; timezone: number; sunrise: number; sunset: number };
+  visibility: number;
+  weather: { id: number; main: string; description: string; icon: string }[];
+  wind: { speed: number; deg: number };
+  clouds: { all: number };
+};
 
-function Section({children, title}: SectionProps): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
+// TODO move to separate file
+function Header(): React.JSX.Element {
   return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
+    <>
+      <SafeAreaView style={styles.safeArea}>
+        <View style={styles.header}>
+          <Text style={styles.title}>Weather Onboarding</Text>
+        </View>
+      </SafeAreaView>
+    </>
   );
 }
 
-function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
+const App = (): React.JSX.Element => {
+  const [weatherData, setWeatherData] = useState<CityWeather[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
+  // TODO move to separate provider
+  const cityIds = [
+    703448, // Kyiv, UA
+    692194, // Sumy, UA
+    756135, // Warsaw, PL
+    3081368, // Wrocław, PL
+    3067696, // Prague, CZ
+    3077916, // České Budějovice, CZ
+    2950159, // Berlin, DE
+    2867714, // Munich, DE
+    3247449, // Aachen, DE
+    5815135, // Washington, US
+    5128581, // New York City, US
+  ];
 
-  /*
-   * To keep the template simple and small we're adding padding to prevent view
-   * from rendering under the System UI.
-   * For bigger apps the reccomendation is to use `react-native-safe-area-context`:
-   * https://github.com/AppAndFlow/react-native-safe-area-context
-   *
-   * You can read more about it here:
-   * https://github.com/react-native-community/discussions-and-proposals/discussions/827
-   */
-  const safePadding = '5%';
+  useEffect(() => {
+    // TODO implement pagination
+    const fetchWeatherData = async () => {
+      setLoading(true);
+      setError(null);
+      
+      try {
+        const apiUrl = `https://api.openweathermap.org/data/2.5/group?id=${cityIds.join(',')}&appid=${OWM_API_KEY}&units=metric`;
+        
+        console.log(`fetch ${apiUrl}`);
+        
+        const response = await fetch(apiUrl);
+        const data = await response.json();
+
+        if (response.status === 200) {
+          setWeatherData(data.list as CityWeather[]);
+        } else {
+          setError('Failed to load weather data');
+        }
+      } catch (err) {
+        setError(`Error fetching data: ${err}`);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchWeatherData();
+  }, []);
+
+  if (loading) {
+    return (
+      <>
+        <Header />
+        <View style={styles.centered}>
+          <ActivityIndicator size="large" color="#0000ff" />
+        </View>
+      </>
+    );
+  }
+
+  if (error) {
+    return (
+      <>
+        <Header />
+        <View style={styles.centered}>
+          <Text style={styles.error}>{error}</Text>
+        </View>
+      </>
+    );
+  }
 
   return (
-    <View style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
+    // TODO move renderItem to separate component
+    // TODO implement drag to reload
+    <>
+      <Header />
+      <FlatList
+        data={weatherData}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={({ item }) => (
+          <View style={styles.card}>
+            <Text style={styles.cityName}>{item.name}</Text>
+            <Text style={styles.temp}>{item.main.temp}°C</Text>
+          </View>
+        )}
       />
-      <ScrollView
-        style={backgroundStyle}>
-        <View style={{paddingRight: safePadding}}>
-          <Header/>
-        </View>
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-            paddingHorizontal: safePadding,
-            paddingBottom: safePadding,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </View>
+    </>
   );
-}
+};
 
+// TODO support themes with useColorScheme
 const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
+  safeArea: {
+    flex: 0,
+    width: '100%',
+    backgroundColor: '#4CAF50',
   },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
+  header: {
+    height: 80,  // Fixed height for the header
+    width: '100%',  // Full width
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#4CAF50',
   },
-  sectionDescription: {
-    marginTop: 8,
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#fff',  // White text color for contrast
+  },
+  centered: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  error: {
+    color: 'red',
     fontSize: 18,
-    fontWeight: '400',
   },
-  highlight: {
-    fontWeight: '700',
+  card: {
+    padding: 20,
+    margin: 10,
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 5, // Android shadow
+  },
+  cityName: {
+    fontSize: 24,
+    fontWeight: 'bold',
+  },
+  temp: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: '#4CAF50',
   },
 });
 
