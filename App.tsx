@@ -49,29 +49,23 @@ type RootStackParamList = {
 type WeatherMainPageProps = StackScreenProps<RootStackParamList, 'Main'>;
 type WeatherDetailsPageProps = StackScreenProps<RootStackParamList, 'Details'>;
 
+const ArrowIcon: React.FC = () => <Text style={styles.arrow}>{'\u276F'}</Text>;
+
 const WeatherListItem: React.FC<WeatherDetailsProps> = ({ weatherInfo, showArrow = true }: WeatherDetailsProps) => {
   return (
-    <View style={styles.item}>
-      <View style={{ flexDirection: 'row', gap: 10 }}>
+    <View style={styles.mainListItem}>
+      <View style={styles.mainListItemComponent}>
         <Image source={{ uri: `https://openweathermap.org/img/wn/${weatherInfo.weather[0].icon}@2x.png` }}
-          style={{
-            width: 50, height: 50, backgroundColor: '#fff', borderRadius: 100 / 2, // Half of width or height
-            overflow: 'hidden',
-          }} />
+          style={styles.mainListItemIcon} />
         <View>
-          <Text style={styles.cityName}>{weatherInfo.name}</Text>
-          <Text style={styles.cityWeather}>{weatherInfo.weather[0].main}</Text>
+          <Text style={styles.mainListItemTitle}>{weatherInfo.name}</Text>
+          <Text style={styles.mainListItemSubtitle}>{weatherInfo.weather[0].main}</Text>
         </View>
       </View>
 
-      <View style={{ flexDirection: 'row', gap: 10 }}>
+      <View style={styles.mainListItemComponent}>
         <Text style={styles.temp}>{weatherInfo.main.temp} °C</Text>
-        {showArrow ?
-          <Text style={{
-            fontSize: 18,
-            padding: 5
-          }}>{'\u276F'}</Text>
-          : null}
+        {showArrow ? <ArrowIcon /> : null}
       </View>
     </View>
   );
@@ -81,9 +75,9 @@ const DetailsListItem: React.FC<WeatherPropertyProps> = ({ name, value }: Weathe
   return (
     <>
       <View style={styles.separator} />
-      <View style={{ ...styles.item, padding: 20 }}>
-        <Text style={{ fontSize: 18 }}>{name}</Text>
-        <Text style={{ fontSize: 18, color: 'gray' }}>{value}</Text>
+      <View style={styles.detailsSubListItem}>
+        <Text style={styles.detailsSubListItemName}>{name}</Text>
+        <Text style={styles.detailsSubListItemValue}>{value}</Text>
       </View>
     </>
   );
@@ -215,19 +209,9 @@ const App = (): React.JSX.Element => {
 
 // TODO support themes with useColorScheme
 const styles = StyleSheet.create({
-  safeArea: {
-  },
-  header: {
-    height: 80,
-    width: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'red',
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: 'black',
+  arrow: {
+    fontSize: 18,
+    padding: 5,
   },
   centered: {
     flex: 1,
@@ -238,23 +222,28 @@ const styles = StyleSheet.create({
     color: 'red',
     fontSize: 18,
   },
-  item: {
+  mainListItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: 15,
     backgroundColor: 'white'
   },
-  card: {
-    padding: 20,
-    backgroundColor: '#ffffff',
-    shadowRadius: 5,
-    elevation: 5,
+  mainListItemComponent: {
+    flexDirection: 'row',
+    gap: 10
   },
-  cityName: {
+  mainListItemIcon: {
+    width: 50,
+    height: 50,
+    backgroundColor: '#fff',
+    borderRadius: 100 / 2,
+    overflow: 'hidden',
+  },
+  mainListItemTitle: {
     fontSize: 20,
   },
-  cityWeather: {
+  mainListItemSubtitle: {
     fontSize: 18,
     color: 'gray',
   },
@@ -267,21 +256,18 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     borderRadius: 20,
   },
-  details: {
-    padding: 16,
-    backgroundColor: '#f5f5f5',
-    borderRadius: 10,
-    margin: 16,
-    elevation: 3,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
+  detailsSubListItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    backgroundColor: 'white',
+    padding: 20,
   },
-  detailssubtitle: {
+  detailsSubListItemName: {
+    fontSize: 18
+  },
+  detailsSubListItemValue: {
     fontSize: 18,
-    color: '#666',
-    marginBottom: 8,
+    color: 'gray',
   },
   separator: {
     height: 1,
