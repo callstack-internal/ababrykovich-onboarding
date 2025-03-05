@@ -1,18 +1,21 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
-  FlatList,
   ActivityIndicator,
+  FlatList,
   StyleSheet,
-  Text,
   View,
   SafeAreaView,
+  Text,
+  TouchableOpacity,
 } from 'react-native';
+import { createStackNavigator, StackScreenProps } from '@react-navigation/stack';
+import { NavigationContainer } from '@react-navigation/native';
 
 import { OWM_API_KEY } from '@env';
 
 // TODO move to separate class
 // TODO minimize type to keep only essential info
-type CityWeather = {
+type WeatherInfo = {
   coord: { lon: number; lat: number };
   dt: number;
   id: number;
@@ -26,20 +29,55 @@ type CityWeather = {
 };
 
 // TODO move to separate file
-function Header(): React.JSX.Element {
+type HeaderProps = {
+  title?: string;
+};
+
+// TODO move to separate file
+type WeatherDetailsProps = {
+  weatherInfo: WeatherInfo;
+};
+
+// TODO move to separate file with navigation logic
+type RootStackParamList = {
+  Main: undefined;
+  Details: WeatherDetailsProps;
+};
+
+type WeatherMainPageProps = StackScreenProps<RootStackParamList, 'Main'>;
+type WeatherDetailsPageProps = StackScreenProps<RootStackParamList, 'Details'>;
+
+const Header: React.FC<HeaderProps> = ({ title = 'Weather' }) => {
+  return (
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.header}>
+        <Text style={styles.title}>{title}</Text>
+      </View>
+    </SafeAreaView>
+  );
+}
+
+const WeatherDetails: React.FC<WeatherDetailsPageProps> = ({ route }: WeatherDetailsPageProps) => {
+  const { weatherInfo } = route.params;
+
   return (
     <>
-      <SafeAreaView style={styles.safeArea}>
-        <View style={styles.header}>
-          <Text style={styles.title}>Weather Onboarding</Text>
-        </View>
-      </SafeAreaView>
+      <View style={styles.details}>
+        <Text style={styles.title}>{weatherInfo.name}</Text>
+        <Text style={styles.detailssubtitle}>{weatherInfo.weather[0].main}</Text>
+        <Text style={styles.temp}>{weatherInfo.main.temp.toFixed(1)} °F</Text>
+        <Text>Humidity: {weatherInfo.main.humidity}%</Text>
+        <Text>Pressure: {weatherInfo.main.pressure} hPa</Text>
+        <Text>Wind Speed: {weatherInfo.wind.speed} mph</Text>
+        <Text>Cloud Cover: {weatherInfo.clouds.all}%</Text>
+      </View>
     </>
   );
 }
 
-const App = (): React.JSX.Element => {
-  const [weatherData, setWeatherData] = useState<CityWeather[]>([]);
+
+const WeatherMain: React.FC<WeatherMainPageProps> = ({ navigation }: WeatherMainPageProps) => {
+  const [weatherData, setWeatherData] = useState<WeatherInfo[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -63,17 +101,17 @@ const App = (): React.JSX.Element => {
     const fetchWeatherData = async () => {
       setLoading(true);
       setError(null);
-      
+
       try {
         const apiUrl = `https://api.openweathermap.org/data/2.5/group?id=${cityIds.join(',')}&appid=${OWM_API_KEY}&units=metric`;
-        
+
         console.log(`fetch ${apiUrl}`);
-        
+
         const response = await fetch(apiUrl);
         const data = await response.json();
 
         if (response.status === 200) {
-          setWeatherData(data.list as CityWeather[]);
+          setWeatherData(data.list as WeatherInfo[]);
         } else {
           setError('Failed to load weather data');
         }
@@ -90,7 +128,6 @@ const App = (): React.JSX.Element => {
   if (loading) {
     return (
       <>
-        <Header />
         <View style={styles.centered}>
           <ActivityIndicator size="large" color="#0000ff" />
         </View>
@@ -101,7 +138,6 @@ const App = (): React.JSX.Element => {
   if (error) {
     return (
       <>
-        <Header />
         <View style={styles.centered}>
           <Text style={styles.error}>{error}</Text>
         </View>
@@ -113,19 +149,33 @@ const App = (): React.JSX.Element => {
     // TODO move renderItem to separate component
     // TODO implement drag to reload
     <>
-      <Header />
       <FlatList
         data={weatherData}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
-          <View style={styles.card}>
-            <Text style={styles.cityName}>{item.name}</Text>
-            <Text style={styles.temp}>{item.main.temp}°C</Text>
-          </View>
+          <TouchableOpacity onPress={() => navigation.navigate('Details', { weatherInfo: item })}>
+            <View style={styles.card}>
+              <Text style={styles.cityName}>{item.name}</Text>
+              <Text style={styles.temp}>{item.main.temp}°C</Text>
+            </View>
+          </TouchableOpacity>
         )}
       />
     </>
   );
+};
+
+const Stack = createStackNavigator();
+
+const App = (): React.JSX.Element => {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen name="Main" component={WeatherMain as React.FC<any>} />
+        <Stack.Screen name="Details" component={WeatherDetails as React.FC<any>} />
+      </Stack.Navigator>
+    </NavigationContainer>
+  )
 };
 
 // TODO support themes with useColorScheme
@@ -133,14 +183,14 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 0,
     width: '100%',
-    backgroundColor: '#4CAF50',
+    backgroundColor: 'lightgray',
   },
   header: {
     height: 80,  // Fixed height for the header
     width: '100%',  // Full width
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#4CAF50',
+    backgroundColor: 'lightgray',
   },
   title: {
     fontSize: 20,
@@ -174,6 +224,22 @@ const styles = StyleSheet.create({
     fontSize: 32,
     fontWeight: 'bold',
     color: '#4CAF50',
+  },
+  details: {
+    padding: 16,
+    backgroundColor: '#f5f5f5',
+    borderRadius: 10,
+    margin: 16,
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+  },
+  detailssubtitle: {
+    fontSize: 18,
+    color: '#666',
+    marginBottom: 8,
   },
 });
 
