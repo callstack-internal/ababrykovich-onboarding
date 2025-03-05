@@ -4,14 +4,15 @@ import {
   FlatList,
   StyleSheet,
   View,
-  SafeAreaView,
   Text,
   TouchableOpacity,
+  Image,
 } from 'react-native';
 import { createStackNavigator, StackScreenProps } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
 
 import { OWM_API_KEY } from '@env';
+import { ScrollView } from 'react-native-gesture-handler';
 
 // TODO move to separate class
 // TODO minimize type to keep only essential info
@@ -29,13 +30,14 @@ type WeatherInfo = {
 };
 
 // TODO move to separate file
-type HeaderProps = {
-  title?: string;
-};
-
-// TODO move to separate file
 type WeatherDetailsProps = {
   weatherInfo: WeatherInfo;
+  showArrow?: boolean
+};
+
+type WeatherPropertyProps = {
+  name: string;
+  value: string | number;
 };
 
 // TODO move to separate file with navigation logic
@@ -47,34 +49,61 @@ type RootStackParamList = {
 type WeatherMainPageProps = StackScreenProps<RootStackParamList, 'Main'>;
 type WeatherDetailsPageProps = StackScreenProps<RootStackParamList, 'Details'>;
 
-const Header: React.FC<HeaderProps> = ({ title = 'Weather' }) => {
+const WeatherListItem: React.FC<WeatherDetailsProps> = ({ weatherInfo, showArrow = true }: WeatherDetailsProps) => {
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <View style={styles.header}>
-        <Text style={styles.title}>{title}</Text>
+    <View style={styles.item}>
+      <View style={{ flexDirection: 'row', gap: 10 }}>
+        <Image source={{ uri: `https://openweathermap.org/img/wn/${weatherInfo.weather[0].icon}@2x.png` }}
+          style={{
+            width: 50, height: 50, backgroundColor: '#fff', borderRadius: 100 / 2, // Half of width or height
+            overflow: 'hidden',
+          }} />
+        <View>
+          <Text style={styles.cityName}>{weatherInfo.name}</Text>
+          <Text style={styles.cityWeather}>{weatherInfo.weather[0].main}</Text>
+        </View>
       </View>
-    </SafeAreaView>
+
+      <View style={{ flexDirection: 'row', gap: 10 }}>
+        <Text style={styles.temp}>{weatherInfo.main.temp} °C</Text>
+        {showArrow ?
+          <Text style={{
+            fontSize: 18,
+            padding: 5
+          }}>{'\u276F'}</Text>
+          : null}
+      </View>
+    </View>
   );
-}
+};
+
+const DetailsListItem: React.FC<WeatherPropertyProps> = ({ name, value }: WeatherPropertyProps) => {
+  return (
+    <>
+      <View style={styles.separator} />
+      <View style={{ ...styles.item, padding: 20 }}>
+        <Text style={{ fontSize: 18 }}>{name}</Text>
+        <Text style={{ fontSize: 18, color: 'gray' }}>{value}</Text>
+      </View>
+    </>
+  );
+};
 
 const WeatherDetails: React.FC<WeatherDetailsPageProps> = ({ route }: WeatherDetailsPageProps) => {
   const { weatherInfo } = route.params;
 
   return (
     <>
-      <View style={styles.details}>
-        <Text style={styles.title}>{weatherInfo.name}</Text>
-        <Text style={styles.detailssubtitle}>{weatherInfo.weather[0].main}</Text>
-        <Text style={styles.temp}>{weatherInfo.main.temp.toFixed(1)} °F</Text>
-        <Text>Humidity: {weatherInfo.main.humidity}%</Text>
-        <Text>Pressure: {weatherInfo.main.pressure} hPa</Text>
-        <Text>Wind Speed: {weatherInfo.wind.speed} mph</Text>
-        <Text>Cloud Cover: {weatherInfo.clouds.all}%</Text>
-      </View>
+      <WeatherListItem weatherInfo={weatherInfo} showArrow={false} />
+      <ScrollView>
+        <DetailsListItem name='Humidity' value={weatherInfo.main.humidity + '%'} />
+        <DetailsListItem name='Pressure' value={weatherInfo.main.pressure + ' hPa'} />
+        <DetailsListItem name='Wind Speed' value={weatherInfo.wind.speed + ' mps'} />
+        <DetailsListItem name='Cloud Cover' value={weatherInfo.clouds.all + '%'} />
+      </ScrollView>
     </>
   );
 }
-
 
 const WeatherMain: React.FC<WeatherMainPageProps> = ({ navigation }: WeatherMainPageProps) => {
   const [weatherData, setWeatherData] = useState<WeatherInfo[]>([]);
@@ -153,12 +182,12 @@ const WeatherMain: React.FC<WeatherMainPageProps> = ({ navigation }: WeatherMain
         data={weatherData}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => navigation.navigate('Details', { weatherInfo: item })}>
-            <View style={styles.card}>
-              <Text style={styles.cityName}>{item.name}</Text>
-              <Text style={styles.temp}>{item.main.temp}°C</Text>
-            </View>
-          </TouchableOpacity>
+          <>
+            <TouchableOpacity onPress={() => navigation.navigate('Details', { weatherInfo: item })}>
+              <WeatherListItem weatherInfo={item} />
+            </TouchableOpacity>
+            <View style={styles.separator} />
+          </>
         )}
       />
     </>
@@ -170,7 +199,13 @@ const Stack = createStackNavigator();
 const App = (): React.JSX.Element => {
   return (
     <NavigationContainer>
-      <Stack.Navigator>
+      <Stack.Navigator
+        screenOptions={{
+          headerStyle: { backgroundColor: 'lightgray' },
+          headerTintColor: 'black',
+          headerTitleStyle: { fontWeight: 'bold' },
+        }}
+      >
         <Stack.Screen name="Main" component={WeatherMain as React.FC<any>} />
         <Stack.Screen name="Details" component={WeatherDetails as React.FC<any>} />
       </Stack.Navigator>
@@ -181,21 +216,18 @@ const App = (): React.JSX.Element => {
 // TODO support themes with useColorScheme
 const styles = StyleSheet.create({
   safeArea: {
-    flex: 0,
-    width: '100%',
-    backgroundColor: 'lightgray',
   },
   header: {
-    height: 80,  // Fixed height for the header
-    width: '100%',  // Full width
+    height: 80,
+    width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'lightgray',
+    backgroundColor: 'red',
   },
   title: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#fff',  // White text color for contrast
+    color: 'black',
   },
   centered: {
     flex: 1,
@@ -206,24 +238,34 @@ const styles = StyleSheet.create({
     color: 'red',
     fontSize: 18,
   },
+  item: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 15,
+    backgroundColor: 'white'
+  },
   card: {
     padding: 20,
-    margin: 10,
-    backgroundColor: '#fff',
-    borderRadius: 10,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
+    backgroundColor: '#ffffff',
     shadowRadius: 5,
-    elevation: 5, // Android shadow
+    elevation: 5,
   },
   cityName: {
-    fontSize: 24,
-    fontWeight: 'bold',
+    fontSize: 20,
+  },
+  cityWeather: {
+    fontSize: 18,
+    color: 'gray',
   },
   temp: {
-    fontSize: 32,
+    fontSize: 18,
     fontWeight: 'bold',
-    color: '#4CAF50',
+    backgroundColor: '#B9D3DE',
+    color: '#f5f5f5',
+    padding: 5,
+    paddingHorizontal: 10,
+    borderRadius: 20,
   },
   details: {
     padding: 16,
@@ -240,6 +282,10 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: '#666',
     marginBottom: 8,
+  },
+  separator: {
+    height: 1,
+    backgroundColor: '#ccc',
   },
 });
 
