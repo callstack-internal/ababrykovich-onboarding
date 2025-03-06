@@ -4,7 +4,7 @@ import mockSafeAreaContext from 'react-native-safe-area-context/jest/mock';
 
 jest.mock('react-native-safe-area-context', () => mockSafeAreaContext);
 
-import 'react-native-gesture-handler/jestSetup'
+import 'react-native-gesture-handler/jestSetup';
 
 jest.mock('@react-navigation/native', () => ({
   useNavigation: jest.fn(() => ({
@@ -13,11 +13,11 @@ jest.mock('@react-navigation/native', () => ({
     push: jest.fn(),
   })),
   NavigationContainer: ({ children }: { children: React.ReactNode }) => children,
-}))
+}));
 
 
 jest.mock('@react-navigation/stack', () => {
-  const actualNav: any = jest.requireActual('@react-navigation/stack')
+  const actualNav: any = jest.requireActual('@react-navigation/stack');
 
   return {
     ...actualNav,
@@ -25,7 +25,7 @@ jest.mock('@react-navigation/stack', () => {
       Navigator: ({ children }: { children: React.ReactNode }) => children,
       Screen: ({ children }: { children: React.ReactNode }) => children,
     })),
-  }
+  };
 });
 
 

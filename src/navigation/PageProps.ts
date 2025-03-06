@@ -5,9 +5,9 @@ import WeatherInfo from '@/model/WeatherInfo';
 export const enum PageName {
   Main = 'Main',
   Details = 'Details'
-};
+}
 
-type StackParamList = {
+export type StackParamList = {
   [PageName.Main]: undefined;
   [PageName.Details]: { weatherInfo: WeatherInfo }
 };

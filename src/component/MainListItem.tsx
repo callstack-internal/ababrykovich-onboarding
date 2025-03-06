@@ -44,11 +44,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: 15,
-    backgroundColor: 'white'
+    backgroundColor: 'white',
   },
   mainListItemComponent: {
     flexDirection: 'row',
-    gap: 10
+    gap: 10,
   },
   mainListItemIcon: {
     width: 50,

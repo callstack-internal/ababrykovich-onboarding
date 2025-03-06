@@ -3,9 +3,9 @@ import { NavigationContainer as ReactNavigationContainer } from '@react-navigati
 
 import MainPage from '@/MainPage';
 import DetailsPage from '@/DetailsPage';
-import { PageName } from '@/navigation/PageProps';
+import { PageName, StackParamList } from '@/navigation/PageProps';
 
-const Stack = createStackNavigator();
+const Stack = createStackNavigator<StackParamList>();
 
 const StackScreenOptions: StackNavigationOptions = {
   headerStyle: { backgroundColor: 'lightgray' },
@@ -21,7 +21,7 @@ const NavigationContainer = () => {
         <Stack.Screen name={PageName.Details} component={DetailsPage} />
       </Stack.Navigator>
     </ReactNavigationContainer>
-  )
+  );
 };
 
 export default NavigationContainer;

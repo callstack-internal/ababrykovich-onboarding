@@ -17,7 +17,7 @@ const useWeatherInfo = (apiKey: string, cityIds: number[]) => {
 
       try {
         const apiUrl = `https://api.openweathermap.org/data/2.5/group?id=${cityIds.join(',')}&appid=${apiKey}&units=metric`;
-        
+
         const response = await fetch(apiUrl);
         const data = await response.json();
 
