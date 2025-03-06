@@ -12,9 +12,9 @@ type MainListItemProps = {
   showArrow?: boolean
 };
 
-const ArrowIcon: React.FC = () => <Text style={styles.arrow}>{'\u276F'}</Text>;
+const ArrowIcon = () => <Text style={styles.arrow}>{'\u276F'}</Text>;
 
-const MainListItem: React.FC<MainListItemProps> = ({ weatherInfo, showArrow = true }: MainListItemProps) => {
+const MainListItem = ({ weatherInfo, showArrow = true }: MainListItemProps) => {
   return (
     <View style={styles.mainListItem}>
       <View style={styles.mainListItemComponent}>

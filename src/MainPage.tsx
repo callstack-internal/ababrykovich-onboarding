@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   ActivityIndicator,
   FlatList,
@@ -7,14 +7,14 @@ import {
   Text,
   TouchableOpacity,
 } from 'react-native';
-import { MainPageProps } from '@/model/RootStackParamList';
+import { PageProps, PageName } from '@/navigation/PageProps';
 import MainListItem from '@/component/MainListItem';
 
 import { OWM_API_KEY } from '@env';
 import useWeatherInfo from '@/hook/useWeatherInfo';
 import DefaultCityProvider from '@/service/CityInfoProvider';
 
-const MainPage: React.FC<MainPageProps> = ({ navigation }: MainPageProps) => {
+const MainPage = ({ navigation }: PageProps<PageName.Main>) => {
   const [ cityIds ] = useState<number[]>(new DefaultCityProvider().getCityIds());
   const { weatherData, loading, error } = useWeatherInfo(OWM_API_KEY, cityIds);
 
@@ -47,7 +47,7 @@ const MainPage: React.FC<MainPageProps> = ({ navigation }: MainPageProps) => {
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
           <>
-            <TouchableOpacity onPress={() => navigation.navigate('Details', { weatherInfo: item })}>
+            <TouchableOpacity onPress={() => navigation.navigate(PageName.Details, { weatherInfo: item })}>
               <MainListItem weatherInfo={item} />
             </TouchableOpacity>
             <View style={styles.separator} />

@@ -5,7 +5,7 @@ import {
   Text,
 } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
-import { DetailsPageProps } from '@/model/RootStackParamList';
+import { PageProps, PageName } from '@/navigation/PageProps';
 import MainListItem from '@/component/MainListItem';
 
 type DetailsPropertyProps = {
@@ -13,7 +13,7 @@ type DetailsPropertyProps = {
   value: string | number;
 };
 
-const DetailsListItem: React.FC<DetailsPropertyProps> = ({ name, value }: DetailsPropertyProps) => {
+const DetailsListItem = ({ name, value }: DetailsPropertyProps) => {
   return (
     <>
       <View style={styles.separator} />
@@ -25,7 +25,7 @@ const DetailsListItem: React.FC<DetailsPropertyProps> = ({ name, value }: Detail
   );
 };
 
-const DetailsPage: React.FC<DetailsPageProps> = ({ route }: DetailsPageProps) => {
+const DetailsPage = ({ route }: PageProps<PageName.Details>) => {
   const { weatherInfo } = route.params;
 
   return (

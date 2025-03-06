@@ -3,6 +3,7 @@ import { NavigationContainer as ReactNavigationContainer } from '@react-navigati
 
 import MainPage from '@/MainPage';
 import DetailsPage from '@/DetailsPage';
+import { PageName } from '@/navigation/PageProps';
 
 const Stack = createStackNavigator();
 
@@ -16,8 +17,8 @@ const NavigationContainer = () => {
           headerTitleStyle: { fontWeight: 'bold' },
         }}
       >
-        <Stack.Screen name="Main" component={MainPage as React.FC<any>} />
-        <Stack.Screen name="Details" component={DetailsPage as React.FC<any>} />
+        <Stack.Screen name={PageName.Main} component={MainPage} />
+        <Stack.Screen name={PageName.Details} component={DetailsPage} />
       </Stack.Navigator>
     </ReactNavigationContainer>
   )
