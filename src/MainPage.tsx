@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import { MainPageProps } from '@/model/RootStackParamList';
 import WeatherInfo from '@/model/WeatherInfo';
-import MainListItem from './component/MainListItem';
+import MainListItem from '@/component/MainListItem';
 
 import { OWM_API_KEY } from '@env';
 

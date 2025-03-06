@@ -1,6 +1,6 @@
 import { StackScreenProps } from '@react-navigation/stack';
 
-import WeatherInfo from './WeatherInfo';
+import WeatherInfo from '@/model/WeatherInfo';
 
 type RootStackParamList = {
   Main: undefined;

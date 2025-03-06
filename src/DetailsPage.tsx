@@ -6,7 +6,7 @@ import {
 } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { DetailsPageProps } from '@/model/RootStackParamList';
-import MainListItem from './component/MainListItem';
+import MainListItem from '@/component/MainListItem';
 
 type DetailsPropertyProps = {
   name: string;

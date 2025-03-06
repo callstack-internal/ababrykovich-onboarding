@@ -1,4 +1,4 @@
-import NavigationContainer from './navigation/NavigationContainer';
+import NavigationContainer from '@/navigation/NavigationContainer';
 
 const App = () => <NavigationContainer />
 

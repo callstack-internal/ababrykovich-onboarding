@@ -1,8 +1,8 @@
-import { createStackNavigator, StackScreenProps } from '@react-navigation/stack';
+import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer as ReactNavigationContainer } from '@react-navigation/native';
 
-import MainPage from '../MainPage';
-import DetailsPage from '../DetailsPage';
+import MainPage from '@/MainPage';
+import DetailsPage from '@/DetailsPage';
 
 const Stack = createStackNavigator();
 
