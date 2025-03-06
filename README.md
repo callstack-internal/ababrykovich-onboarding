@@ -59,7 +59,7 @@ This is one way to run your app — you can also build it directly from Android 
 - [ ] Dark/light theme
 - [ ] Splash screen + icons update
 - [ ] Native module with available weather info from your device
-- [ ] CI
+- [x] CI
 - [ ] Try https://enterprise-framework.callstack.com/
 - [ ] Try some cool animations on list and transitions
 - [ ] Localization
