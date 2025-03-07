@@ -53,6 +53,8 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    - run: brew bundle
+
     - run: npm ci
 
     - uses: ruby/setup-ruby@v1
@@ -65,16 +67,13 @@ jobs:
         path: ./ios/Pods
         key: pods-${{ runner.os }}-${{ hashFiles('ios/Podfile.lock') }}
 
-    - name: Cache Xcode Derived Data
+    - name: Cache ccache
       uses: actions/cache@v4
       with:
-        path: ~/Library/Developer/Xcode/DerivedData
-        key: ddata-${{ runner.os }}-${{ github.sha }}
+        path: ~/.ccache
+        key: ${{ runner.os }}-ccache-${{ github.sha }}
         restore-keys: |
-          ddata-${{ runner.os }}
-  
-    - name: Prevent Derived Data cache invalidation
-      run: defaults write com.apple.dt.Xcode IgnoreFileSystemDeviceInodeChanges -bool YES
+          ${{ runner.os }}-ccache-
 
     - run: bundle exec pod install
       working-directory: ios
