@@ -1,0 +1,55 @@
+name: Build & Quality
+
+on:
+  push:
+    branches: [ main ]
+    tags: [ v* ]
+  pull_request:
+  workflow_dispatch:
+  schedule:
+  - cron: '0 * * * Mon'
+
+jobs:
+  build-ts:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 18
+
+    - run: npm ci
+
+    - run: npm run lint
+
+    - run: npx tsc --noEmit
+
+    - run: npm run test -- --ci --runInBand
+
+  build-native:
+    needs: build-ts
+    runs-on: ${{ matrix.os }}
+    concurrency:
+      group: '${{ github.workflow }}-${{ matrix.platform }}-${{ github.head_ref || github.ref_name }}'
+      cancel-in-progress: true
+    strategy:
+      fail-fast: false
+      max-parallel: 5
+      matrix:
+        include:
+        - os: macos-latest
+          platform: ios
+        - os: ubuntu-latest
+          platform: android
+    steps:
+    - uses: actions/checkout@v4
+
+    - uses: actions/setup-java@v4
+      with:
+        java-version: 17
+        distribution: adopt
+
+    - run: npm ci
+
+    - run: npx react-native build-${{ matrix.platform }}
