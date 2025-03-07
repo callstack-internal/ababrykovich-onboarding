@@ -1,4 +1,4 @@
-import WeatherInfo from "@/model/WeatherInfo";
+import WeatherInfo from '@/model/WeatherInfo';
 import NativeWeatherModule from '@specs/NativeWeatherModule';
 
 interface DeviceWeatherInfoProvider {
@@ -21,11 +21,11 @@ class DefaultDeviceWeatherInfoProvider implements DeviceWeatherInfoProvider {
         icon: deviceInfo.weather_icon,
       }],
       wind: {
-        speed: deviceInfo.wind_speed
+        speed: deviceInfo.wind_speed,
       },
       clouds: {
-        all: deviceInfo.clouds
-      }
+        all: deviceInfo.clouds,
+      },
     } as WeatherInfo;
 
     return weatherInfo;

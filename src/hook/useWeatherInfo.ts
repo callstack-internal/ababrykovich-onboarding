@@ -36,7 +36,7 @@ const useWeatherInfo = (apiKey: string, cityIds: number[], deviceInfo: WeatherIn
     };
 
     fetchWeatherData();
-  }, [apiKey, cityIds]);
+  }, [apiKey, cityIds, deviceInfo]);
 
   return { weatherData, loading, error };
 };
