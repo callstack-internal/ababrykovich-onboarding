@@ -59,11 +59,23 @@ jobs:
       with:
         bundler-cache: true
 
-    - uses: actions/cache@v4
+    - name: cache pods
+      uses: actions/cache@v4
       with:
         path: ./ios/Pods
-        key: ${{ runner.os }}-pods-${{ hashFiles('ios/Podfile.lock') }}
+        key: pods-${{ runner.os }}-${{ hashFiles('ios/Podfile.lock') }}
+
+    - name: cache Xcode Derived Data
+      uses: actions/cache@v4
+      with:
+        path: ~/Library/Developer/Xcode/DerivedData
+        key: ddata-${{ runner.os }}-${{ github.sha }}
+        restore-keys: |
+          ddata-${{ runner.os }}
   
+    - name: prevent Derived Data cache invalidation
+      run: defaults write com.apple.dt.Xcode IgnoreFileSystemDeviceInodeChanges -bool YES
+
     - run: bundle exec pod install
       working-directory: ios
 
