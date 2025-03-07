@@ -64,7 +64,7 @@ jobs:
         path: ./ios/Pods
         key: ${{ runner.os }}-pods-${{ hashFiles('ios/Podfile.lock') }}
   
-    - run: bundle exec pod install && cd ..
+    - run: bundle exec pod install
       working-directory: ios
 
     - run: npx react-native build-ios
