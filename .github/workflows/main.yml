@@ -9,6 +9,10 @@ on:
   schedule:
   - cron: '0 * * * Mon'
 
+concurrency:
+  group: '${{ github.workflow }}-${{ github.head_ref || github.ref_name }}'
+  cancel-in-progress: true
+
 jobs:
   build-ts:
     runs-on: ubuntu-latest
@@ -27,21 +31,9 @@ jobs:
 
     - run: npm run test -- --ci --runInBand
 
-  build-native:
+  build-android:
     needs: build-ts
-    runs-on: ${{ matrix.os }}
-    concurrency:
-      group: '${{ github.workflow }}-${{ matrix.platform }}-${{ github.head_ref || github.ref_name }}'
-      cancel-in-progress: true
-    strategy:
-      fail-fast: false
-      max-parallel: 5
-      matrix:
-        include:
-        - os: macos-latest
-          platform: ios
-        - os: ubuntu-latest
-          platform: android
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
 
@@ -49,7 +41,30 @@ jobs:
       with:
         java-version: 17
         distribution: adopt
+        cache: gradle
 
     - run: npm ci
 
-    - run: npx react-native build-${{ matrix.platform }}
+    - run: npx react-native build-android
+
+  build-ios:
+    needs: build-ts
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - run: npm ci
+
+    - uses: ruby/setup-ruby@v1
+      with:
+        bundler-cache: true
+
+    - uses: actions/cache@v4
+      with:
+        path: ./ios/Pods
+        key: ${{ runner.os }}-pods-${{ hashFiles('ios/Podfile.lock') }}
+  
+    - run: bundle exec pod install && cd ..
+      working-directory: ios
+
+    - run: npx react-native build-ios
