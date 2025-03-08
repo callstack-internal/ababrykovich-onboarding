@@ -9,9 +9,10 @@ module.exports = {
     ],
     [
       'module-resolver', {
-        root: ['./src'],
+        root: ['./'],
         alias: {
           '@': './src',
+          '@specs': './specs',
         },
         extensions: ['.ts', '.tsx'],
       },

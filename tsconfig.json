@@ -3,12 +3,15 @@
   "compilerOptions": {
     "typeRoots": [
       "node_modules/@types",
-      "../types"
+      "./types"
     ],
-    "baseUrl": "./src",
+    "baseUrl": "./",
     "paths": {
       "@/*": [
-        "./*"
+        "./src/*"
+      ],
+      "@specs/*": [
+        "./specs/*"
       ]
     }
   }

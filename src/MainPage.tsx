@@ -13,10 +13,14 @@ import MainListItem from '@/component/MainListItem';
 import { OWM_API_KEY } from '@env';
 import useWeatherInfo from '@/hook/useWeatherInfo';
 import DefaultCityProvider from '@/service/CityInfoProvider';
+import DefaultDeviceWeatherInfoProvider from './service/DeviceWeatherInfoProvider';
+import WeatherInfo from './model/WeatherInfo';
 
 const MainPage = ({ navigation }: PageProps<PageName.Main>) => {
   const [ cityIds ] = useState<number[]>(new DefaultCityProvider().getCityIds());
-  const { weatherData, loading, error } = useWeatherInfo(OWM_API_KEY, cityIds);
+  const [ deviceInfo ] = useState<WeatherInfo>(new DefaultDeviceWeatherInfoProvider().getWeatherInfo());
+
+  const { weatherData, loading, error } = useWeatherInfo(OWM_API_KEY, cityIds, deviceInfo);
 
   if (loading) {
     return (

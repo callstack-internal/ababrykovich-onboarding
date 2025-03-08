@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 
 import WeatherInfo from '@/model/WeatherInfo';
 
-const useWeatherInfo = (apiKey: string, cityIds: number[]) => {
+const useWeatherInfo = (apiKey: string, cityIds: number[], deviceInfo: WeatherInfo) => {
   const [weatherData, setWeatherData] = useState<WeatherInfo[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -21,6 +21,8 @@ const useWeatherInfo = (apiKey: string, cityIds: number[]) => {
         const response = await fetch(apiUrl);
         const data = await response.json();
 
+        data.list.unshift(deviceInfo);
+
         if (response.status === 200) {
           setWeatherData(data.list as WeatherInfo[]);
         } else {
@@ -34,7 +36,7 @@ const useWeatherInfo = (apiKey: string, cityIds: number[]) => {
     };
 
     fetchWeatherData();
-  }, [apiKey, cityIds]);
+  }, [apiKey, cityIds, deviceInfo]);
 
   return { weatherData, loading, error };
 };
