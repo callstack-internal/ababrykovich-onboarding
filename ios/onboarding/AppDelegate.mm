@@ -10,6 +10,7 @@
 #import "AppDelegate.h"
 
 #import <React/RCTBundleURLProvider.h>
+#import <ReactAppDependencyProvider/RCTAppDependencyProvider.h>
 #import <RCTAppDelegate.h>
 
 #import "NativeWeatherModule.hpp"
@@ -18,7 +19,11 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-  self.moduleName = @"oneboarding";
+  self.moduleName = @"onboarding"; // TODO why it duplicate across
+
+  // https://reactnative.dev/blog/2025/01/21/version-0.77#rctappdependencyprovider
+  self.dependencyProvider = [RCTAppDependencyProvider new];
+
   // You can add your custom initial props in the dictionary below.
   // They will be passed down to the ViewController used by React Native.
   self.initialProps = @{};
