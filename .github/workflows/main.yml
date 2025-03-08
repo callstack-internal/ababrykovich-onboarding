@@ -66,14 +66,16 @@ jobs:
       with:
         path: ./ios/Pods
         key: pods-${{ runner.os }}-${{ hashFiles('ios/Podfile.lock') }}
+        restore-keys: |
+          pods-${{ runner.os }}
 
     - name: Cache ccache
       uses: actions/cache@v4
       with:
         path: ~/.ccache
-        key: ${{ runner.os }}-ccache-${{ github.sha }}
+        key: ccache-${{ runner.os }}-${{ github.sha }}
         restore-keys: |
-          ${{ runner.os }}-ccache-
+          ccache-${{ runner.os }}-
 
     - run: bundle exec pod install
       working-directory: ios
