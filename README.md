@@ -56,10 +56,10 @@ This is one way to run your app — you can also build it directly from Android 
 
 - [x] Basic navigation
 - [x] Add Weather icons + implement UI exactly as on https://www.notion.so/callstack/Technical-Onboarding-7b6960f3f9cb45849912b01a3d6a3938
-- [ ] Dark/light theme
-- [ ] Splash screen + icons update
+- [x] Dark/light theme
 - [x] Native module with available weather info from your device
 - [x] CI
+- [ ] Splash screen + icons update
 - [ ] Try https://enterprise-framework.callstack.com/
 - [ ] Try some cool animations on list and transitions
 - [ ] Localization

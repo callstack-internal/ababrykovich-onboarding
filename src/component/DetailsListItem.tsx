@@ -1,3 +1,5 @@
+import { useThemedStyles } from '@/hook/useThemedStyles';
+import { ThemeConfig } from '@/ThemeConfig';
 import React from 'react';
 import {
   View,
@@ -11,6 +13,8 @@ type DetailsPropertyProps = {
 };
 
 const DetailsListItem = ({ name, value }: DetailsPropertyProps) => {
+  const [styles] = useThemedStyles(createStyles);
+
   return (
     <>
       <View style={styles.separator} />
@@ -22,23 +26,24 @@ const DetailsListItem = ({ name, value }: DetailsPropertyProps) => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (config: ThemeConfig) => StyleSheet.create({
   separator: {
     height: 1,
-    backgroundColor: '#ccc',
+    backgroundColor: config.separatorColor,
   },
   detailsSubListItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    backgroundColor: 'white',
+    backgroundColor: config.background,
     padding: 20,
   },
   detailsSubListItemName: {
-    fontSize: 18,
+    color: config.primaryText,
+    fontSize: config.primartSize,
   },
   detailsSubListItemValue: {
-    fontSize: 18,
-    color: 'gray',
+    color: config.secondaryText,
+    fontSize: config.secondarySize,
   },
 });
 
