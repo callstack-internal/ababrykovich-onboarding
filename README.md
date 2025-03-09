@@ -1,4 +1,6 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+[![Build & Quality](https://github.com/callstack-internal/weatherding/actions/workflows/main.yml/badge.svg)](https://github.com/callstack-internal/weatherding/actions/workflows/main.yml)
+
+This is a [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli) that is implementation of the onboarding app described in https://www.notion.so/callstack/Technical-Onboarding-7b6960f3f9cb45849912b01a3d6a3938
 
 ![Demo](./public/misc/demo.gif)
 
