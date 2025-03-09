@@ -6,76 +6,76 @@ import {
   Image,
 } from 'react-native';
 import WeatherInfo from '@/model/WeatherInfo';
+import { ThemeConfig } from '@/ThemeConfig';
+import { useThemedStyles } from '@/hook/useThemedStyles';
+import { ArrowIcon } from './ArrowIcon';
 
 type MainListItemProps = {
   weatherInfo: WeatherInfo;
   showArrow?: boolean
 };
 
-const ArrowIcon = () => <Text style={styles.arrow}>{'\u276F'}</Text>;
-
 const MainListItem = ({ weatherInfo, showArrow = true }: MainListItemProps) => {
+  const [styles] = useThemedStyles(createStyles);
+
   return (
-    <View style={styles.mainListItem}>
-      <View style={styles.mainListItemComponent}>
+    <View style={styles.row}>
+      <View style={styles.rowItem}>
         <Image source={{ uri: `https://openweathermap.org/img/wn/${weatherInfo.weather[0].icon}@2x.png` }}
-          style={styles.mainListItemIcon} />
+          style={styles.rowIcon} />
         <View>
-          <Text style={styles.mainListItemTitle}>{weatherInfo.name}</Text>
-          <Text style={styles.mainListItemSubtitle}>{weatherInfo.weather[0].main}</Text>
+          <Text style={styles.rowTitle}>{weatherInfo.name}</Text>
+          <Text style={styles.rowSubtitle}>{weatherInfo.weather[0].main}</Text>
         </View>
       </View>
 
-      <View style={styles.mainListItemComponent}>
-        <Text style={styles.temp}>{weatherInfo.main.temp} °C</Text>
+      <View style={styles.rowItem}>
+        <Text style={styles.temperature}>{weatherInfo.main.temp} °C</Text>
         {showArrow ? <ArrowIcon /> : null}
       </View>
     </View>
   );
 };
 
-const styles = StyleSheet.create({
-  arrow: {
-    fontSize: 18,
-    padding: 5,
-  },
-  mainListItem: {
+const createStyles = (config: ThemeConfig) => StyleSheet.create({
+  row: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: 15,
-    backgroundColor: 'white',
+    backgroundColor: config.background,
   },
-  mainListItemComponent: {
+  rowItem: {
     flexDirection: 'row',
     gap: 10,
   },
-  mainListItemIcon: {
+  rowIcon: {
     width: 50,
     height: 50,
-    backgroundColor: '#fff',
+    backgroundColor: config.background,
     borderRadius: 100 / 2,
     overflow: 'hidden',
   },
-  mainListItemTitle: {
-    fontSize: 20,
+  rowTitle: {
+    color: config.primaryText,
+    fontSize: config.primartSize,
   },
-  mainListItemSubtitle: {
-    fontSize: 18,
-    color: 'gray',
+  rowSubtitle: {
+    fontSize: config.secondarySize,
+    color: config.secondaryText,
   },
-  temp: {
-    fontSize: 18,
+  temperature: {
+    fontSize: config.secondarySize,
     fontWeight: 'bold',
-    backgroundColor: '#B9D3DE',
-    color: '#ffffff',
+    backgroundColor: config.temperatureBadgeBackground,
+    color: config.temperatureText,
     padding: 5,
     paddingHorizontal: 10,
     borderRadius: 20,
   },
   separator: {
     height: 1,
-    backgroundColor: '#ccc',
+    backgroundColor: config.separatorColor,
   },
 });
 
