@@ -2,7 +2,9 @@
 
 This is a [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli) that is implementation of the onboarding app described in https://www.notion.so/callstack/Technical-Onboarding-7b6960f3f9cb45849912b01a3d6a3938
 
-![Demo](./public/misc/demo.gif)
+<p align="center">
+  <img src="./public/misc/demo.gif" width="240" />
+</p>
 
 # Getting Started
 
@@ -15,6 +17,7 @@ First, you will need to run **Metro**, the JavaScript build tool for React Nativ
 To start the Metro dev server, run the following command from the root of your React Native project:
 
 ```sh
+npm i
 npm start
 ```
 
@@ -35,13 +38,15 @@ For iOS, remember to install CocoaPods dependencies (this only needs to be run o
 The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
 
 ```sh
-bundle install
+brew bundle
+cd ios
+asdf exec bundle install
 ```
 
 Then, and every time you update your native dependencies, run:
 
 ```sh
-bundle exec pod install
+asdf exec pod install
 ```
 
 For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
