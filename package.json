@@ -1,5 +1,5 @@
 {
-  "name": "onboarding",
+  "name": "weatherding",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -9,8 +9,8 @@
     "lint": "eslint .",
     "start": "react-native start",
     "test": "jest",
-    "uninstall:ios": "xcrun simctl uninstall booted org.reactjs.native.example.onboarding",
-    "uninstall:android": "adb uninstall com.onboarding",
+    "uninstall:ios": "xcrun simctl uninstall booted ck.weatherding",
+    "uninstall:android": "adb uninstall ck.weatherding",
     "uninstall": "npm run uninstall:ios & npm run uninstall:android"
   },
   "codegenConfig": {
@@ -18,7 +18,7 @@
     "type": "modules",
     "jsSrcsDir": "specs",
     "android": {
-      "javaPackageName": "com.onboarding"
+      "javaPackageName": "ck.weatherding"
     }
   },
   "dependencies": {

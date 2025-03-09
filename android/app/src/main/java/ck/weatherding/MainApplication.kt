@@ -1,4 +1,4 @@
-package com.onboarding
+package ck.weatherding
 
 import android.app.Application
 import com.facebook.react.PackageList

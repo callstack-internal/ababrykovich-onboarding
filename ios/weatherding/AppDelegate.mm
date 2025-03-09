@@ -19,7 +19,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-  self.moduleName = @"onboarding"; // TODO why it duplicate across
+  self.moduleName = @"weatherding"; // TODO why it duplicate across
 
   // https://reactnative.dev/blog/2025/01/21/version-0.77#rctappdependencyprovider
   self.dependencyProvider = [RCTAppDependencyProvider new];
