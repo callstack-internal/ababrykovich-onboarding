@@ -1,6 +1,10 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+[![Build & Quality](https://github.com/callstack-internal/weatherding/actions/workflows/main.yml/badge.svg)](https://github.com/callstack-internal/weatherding/actions/workflows/main.yml)
 
-![Demo](./public/misc/demo.gif)
+This is a [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli) that is implementation of the onboarding app described in https://www.notion.so/callstack/Technical-Onboarding-7b6960f3f9cb45849912b01a3d6a3938
+
+<p align="center">
+  <img src="./public/misc/demo.gif" width="240" />
+</p>
 
 # Getting Started
 
@@ -13,6 +17,7 @@ First, you will need to run **Metro**, the JavaScript build tool for React Nativ
 To start the Metro dev server, run the following command from the root of your React Native project:
 
 ```sh
+npm i
 npm start
 ```
 
@@ -33,13 +38,15 @@ For iOS, remember to install CocoaPods dependencies (this only needs to be run o
 The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
 
 ```sh
-bundle install
+brew bundle
+cd ios
+asdf exec bundle install
 ```
 
 Then, and every time you update your native dependencies, run:
 
 ```sh
-bundle exec pod install
+asdf exec pod install
 ```
 
 For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
@@ -57,6 +64,7 @@ This is one way to run your app — you can also build it directly from Android 
 - [x] Basic navigation
 - [x] Add Weather icons + implement UI exactly as on https://www.notion.so/callstack/Technical-Onboarding-7b6960f3f9cb45849912b01a3d6a3938
 - [x] Dark/light theme
+- [x] Icons update (`npx icon-set-creator create public/icon-1024.png`)
 - [x] Native module with available weather info from your device
 - [x] CI
 - [ ] Splash screen + icons update
